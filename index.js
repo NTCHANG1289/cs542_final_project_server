@@ -6,7 +6,7 @@ const app = express();
 
 app.get('/', (req, res) => {
   const client = new Client({
-    connectionString: process.env.DATABASE_URL || "postgresql://localhost:5432",
+    connectionString: process.env.DATABASE_URL || "postgresql://localhost/test",
     // ssl: true,
   });
   client.connect();
