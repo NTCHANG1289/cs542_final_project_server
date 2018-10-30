@@ -16,7 +16,6 @@
   "dependencies": {
     "express": "^4.16.4",
     "nodemon": "^1.18.5",
-    "oracledb": "^3.0.0",
     "pg": "^7.6.0"
   }
 }

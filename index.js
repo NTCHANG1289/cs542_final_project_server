@@ -4,8 +4,6 @@ const { Client } = require('pg');
 
 const app = express();
 
-
-
 app.get('/', (req, res) => {
   const client = new Client({
     connectionString: process.env.DATABASE_URL || "postgresql://localhost:5432",
@@ -13,7 +11,7 @@ app.get('/', (req, res) => {
   });
   client.connect();
   var rows;
-  client.query('SELECT * from weather;', (err, response) => {
+  client.query('SELECT * from movie;', (err, response) => {
     if (err) {
       console.log(err.message);
       throw err;
