@@ -25,8 +25,8 @@ app.get('/movies', (req, res) => {
     client.end();
     // res.header("Access-Control-Allow-Origin", '*');
     // res.header("Access-Control-Allow-Credentials", true);
-    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
-    res.send(rows.map(row => JSON.stringify(row)));
+    // res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+    res.send(rows.map(row => row));
   });
 });
 
