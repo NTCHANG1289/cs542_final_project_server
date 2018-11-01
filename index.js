@@ -4,7 +4,7 @@ const { Client } = require('pg');
 
 const app = express();
 
-app.get('/', (req, res) => {
+app.get('/movies', (req, res) => {
   const client = new Client({
     connectionString: process.env.DATABASE_URL || "postgresql://localhost/test",
     // ssl: true,
@@ -21,6 +21,8 @@ app.get('/', (req, res) => {
       console.log(JSON.stringify(row));
     }
     client.end();
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
     res.send(rows.map(row => JSON.stringify(row)));
   });
 });
