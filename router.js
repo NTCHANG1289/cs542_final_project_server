@@ -26,18 +26,18 @@ module.exports = app => {
     client.connect();
     var rows;
     let param = "'%" + req.params.title + "%'";
-    let queryString = 'SELECT * FROM movie WHERE title ILIKE ' + param + 'ORDER BY year DESC';
+    let queryString = 'SELECT * FROM movie_view WHERE title ILIKE ' + param;
     client.query(queryString, (err, response) => {
       if (err) {
         console.log(err.message);
         throw err;
       }
       rows = response.rows;
-      // for (let row of response.rows) {
-      //   console.log(JSON.stringify(row));
-      // }
+      for (let row of response.rows) {
+        console.log(JSON.stringify(row));
+      }
       client.end();
-      res.send(rows);
+      res.send(rows.map(row => JSON.stringify(row)));
     });
   });
 
@@ -47,18 +47,18 @@ module.exports = app => {
     client.connect();
     var rows;
     let param = "'%" + req.params.director + "%'";
-    let queryString = 'SELECT * FROM movie WHERE director ILIKE ' + param + 'ORDER BY year DESC';
+    let queryString = 'SELECT * FROM movie_view WHERE director ILIKE ' + param + 'ORDER BY year DESC';
     client.query(queryString, (err, response) => {
       if (err) {
         console.log(err.message);
         throw err;
       }
       rows = response.rows;
-      // for (let row of response.rows) {
-      //   console.log(JSON.stringify(row));
-      // }
+      for (let row of response.rows) {
+        console.log(JSON.stringify(row));
+      }
       client.end();
-      res.send(rows);
+      res.send(rows.map(row => JSON.stringify(row)));
     });
   });
 
@@ -68,18 +68,18 @@ module.exports = app => {
     client.connect();
     var rows;
     let param = "'%" + req.params.actor + "%'";
-    let queryString = "SELECT * FROM movie WHERE movie_id IN (SELECT movie_id FROM movie_cast WHERE actor_name ILIKE" + param + ")" + 'ORDER BY year DESC';
+    let queryString = 'SELECT * FROM movie_view WHERE movie_view.movie_id IN (SELECT movie_id FROM movie_cast WHERE actor_name ILIKE ' + param + ')';
     client.query(queryString, (err, response) => {
       if (err) {
         console.log(err.message);
         throw err;
       }
       rows = response.rows;
-      // for (let row of response.rows) {
-      //   console.log(JSON.stringify(row));
-      // }
+      for (let row of response.rows) {
+        console.log(JSON.stringify(row));
+      }
       client.end();
-      res.send(rows);
+      res.send(rows.map(row => JSON.stringify(row)));
     });
   });
 
@@ -89,18 +89,64 @@ module.exports = app => {
     client.connect();
     var rows;
     let param = "'%" + req.params.genre + "%'";
-    let queryString = "SELECT * FROM movie WHERE movie_id IN (SELECT movie_id FROM movie_genre WHERE genre ILIKE" + param + ")";
+    let queryString = 'SELECT * FROM movie_view WHERE movie_view.movie_id IN (SELECT movie_id FROM movie_genre WHERE genre ILIKE ' + param + ')';
     client.query(queryString, (err, response) => {
       if (err) {
         console.log(err.message);
         throw err;
       }
       rows = response.rows;
-      // for (let row of response.rows) {
-      //   console.log(JSON.stringify(row));
-      // }
+      for (let row of response.rows) {
+        console.log(JSON.stringify(row));
+      }
       client.end();
-      res.send(rows);
+      res.send(rows.map(row => JSON.stringify(row)));
+    });
+  });
+
+  // get reviews by movie title.
+  app.get('/searchtitle/:title/review', (req, res) => {
+    const client = dbConnection();
+    client.connect();
+    var rows;
+    let param = "'%" + req.params.title + "%'";
+    let queryString = 'SELECT * FROM review WHERE review.movie_id IN (SELECT movie_id FROM movie_view WHERE title ILIKE ' + param + ')';
+    client.query(queryString, (err, response) => {
+      if (err) {
+        console.log(err.message);
+        throw err;
+      }
+      rows = response.rows;
+      for (let row of response.rows) {
+        console.log(JSON.stringify(row));
+      }
+      client.end();
+      res.send(rows.map(row => JSON.stringify(row)));
+    });
+  });
+
+  //recommend
+  app.get('/searchtitle/:title/recommend', (req, res) => {
+    const client = dbConnection();
+    client.connect();
+    var rows;
+    let param = "'%" + req.params.title + "%'";
+    //select movie_id1, movie_view.title
+    //from recommend, movie_view
+    //where movie_id2 = 9
+    //'SELECT movie_id1, movie_view.title FROM recommend, movie_view WHERE recommend.movie_id1 IN (SELECT movie_id FROM movie_view WHERE title ILIKE ' + param + ')';
+    let queryString = 'SELECT distinct (movie_view.title) FROM recommend, movie_view WHERE recommend.movie_id2 IN (SELECT movie_id FROM movie_view WHERE title ILIKE ' + param + ') and movie_view.movie_id IN (SELECT movie_id FROM movie_view WHERE title ILIKE ' + param + ')';
+    client.query(queryString, (err, response) => {
+      if (err) {
+        console.log(err.message);
+        throw err;
+      }
+      rows = response.rows;
+      for (let row of response.rows) {
+        console.log(JSON.stringify(row));
+      }
+      client.end();
+      res.send(rows.map(row => JSON.stringify(row)));
     });
   });
 };

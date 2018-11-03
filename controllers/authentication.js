@@ -12,6 +12,7 @@ exports.signup = (req, res, next) => {
     // if (err) throw err;
     // console.log(user);
     if (existingUser) {
+      // return res.send(existingUser)
       return res.status(422).send({ error: 'Email is in use' })
     }
 
