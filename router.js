@@ -1,5 +1,8 @@
 const dbConnection = require('./db/dbConnection');
+const Authentication = require('./controllers/authentication');
+
 module.exports = app => {
+  app.post('/signup', Authentication.signup);
   // Jonathan's example: get all movies
   app.get('/movies', (req, res) => {
     const client = dbConnection();
