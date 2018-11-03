@@ -1,4 +1,4 @@
-const dbConnection = require('./config/dbConnection');
+const dbConnection = require('./db/dbConnection');
 module.exports = app => {
   // Jonathan's example: get all movies
   app.get('/movies', (req, res) => {
