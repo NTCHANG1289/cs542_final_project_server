@@ -14,7 +14,6 @@ module.exports = app => {
         throw err;
       }
       rows = response.rows;
-
       client.end();
       res.send(rows);
     });
@@ -33,11 +32,8 @@ module.exports = app => {
         throw err;
       }
       rows = response.rows;
-      for (let row of response.rows) {
-        console.log(JSON.stringify(row));
-      }
       client.end();
-      res.send(rows.map(row => JSON.stringify(row)));
+      res.send(rows);
     });
   });
 
@@ -54,11 +50,8 @@ module.exports = app => {
         throw err;
       }
       rows = response.rows;
-      for (let row of response.rows) {
-        console.log(JSON.stringify(row));
-      }
       client.end();
-      res.send(rows.map(row => JSON.stringify(row)));
+      res.send(rows);
     });
   });
 
@@ -75,11 +68,8 @@ module.exports = app => {
         throw err;
       }
       rows = response.rows;
-      for (let row of response.rows) {
-        console.log(JSON.stringify(row));
-      }
       client.end();
-      res.send(rows.map(row => JSON.stringify(row)));
+      res.send(rows);
     });
   });
 
@@ -96,11 +86,8 @@ module.exports = app => {
         throw err;
       }
       rows = response.rows;
-      for (let row of response.rows) {
-        console.log(JSON.stringify(row));
-      }
       client.end();
-      res.send(rows.map(row => JSON.stringify(row)));
+      res.send(rows);
     });
   });
 
@@ -117,11 +104,8 @@ module.exports = app => {
         throw err;
       }
       rows = response.rows;
-      for (let row of response.rows) {
-        console.log(JSON.stringify(row));
-      }
       client.end();
-      res.send(rows.map(row => JSON.stringify(row)));
+      res.send(rows);
     });
   });
 
@@ -142,11 +126,8 @@ module.exports = app => {
         throw err;
       }
       rows = response.rows;
-      for (let row of response.rows) {
-        console.log(JSON.stringify(row));
-      }
       client.end();
-      res.send(rows.map(row => JSON.stringify(row)));
+      res.send(rows);
     });
   });
 };
