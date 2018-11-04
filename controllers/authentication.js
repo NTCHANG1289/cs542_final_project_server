@@ -10,13 +10,22 @@ function tokenForUser(user) {
 };
 
 exports.signin = (req, res, next) => {
-  res.send({ token: tokenForUser(req.user) });
+  res.send({ 
+    token: tokenForUser(req.user),
+    user: req.user
+  });
 }
 
 
 exports.signup = (req, res, next) => {
-  const email = req.body.email;
-  const password = req.body.password;
+  const {
+    username,
+    email,
+    password,
+    dob,
+    gender,
+    favGenre
+  } = req.body;
 
   if (!email || !password) {
     return res.status(422).send({ error: 'You must provide email and password' })
@@ -28,13 +37,16 @@ exports.signup = (req, res, next) => {
     if (existingUser) {
       // return res.send(existingUser)
       return res.status(422).send({
-        token: tokenForUser(existingUser.get({ plain: true }))
+        error: 'Email is in use'
       })
     }
 
     const user = User.create({
+      username,
       email,
-      password
+      password,
+      dob,
+      gender
     }).then(newUser => {
       // console.log(newUser.get({
       //   plain: true
@@ -42,7 +54,8 @@ exports.signup = (req, res, next) => {
       res.send({
         token: tokenForUser(newUser.get({
           plain: true
-        }))
+        })),
+        user: newUser
       });
     });
 

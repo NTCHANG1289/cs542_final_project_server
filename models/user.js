@@ -1,8 +1,15 @@
 const Sequelize = require('sequelize');
 const sequelize = require('../db/getSequelize');
 const bcrypt = require('bcrypt-nodejs');
+const uuid = require('uuid');
 
 const User = sequelize().define('user', {
+  user_id: {
+    type: Sequelize.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+    defaultValue: uuid()
+  },
   username: {
     type: Sequelize.STRING
   },
@@ -10,12 +17,16 @@ const User = sequelize().define('user', {
     type: Sequelize.STRING
   },
   password: {
-    type: Sequelize.STRING
+    type: Sequelize.TEXT
   },
   gender: {
     type: Sequelize.STRING
+  },
+  dob: {
+    type: Sequelize.DATE
   }
 }, {
+    timestamps: false,
     hooks: {
       beforeCreate(user) {
         return new Promise((resolve, reject) => {
@@ -31,7 +42,7 @@ const User = sequelize().define('user', {
     }
   });
 
-User.prototype.validPassword = function(password, callback) {
+User.prototype.validPassword = function (password, callback) {
   return bcrypt.compare(password, this.password, (err, isMatch) => {
     if (err) {
       return callback(err);
