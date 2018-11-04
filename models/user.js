@@ -17,8 +17,7 @@ const User = sequelize().define('user', {
   }
 }, {
     hooks: {
-      beforeCreate: (user) => {
-
+      beforeCreate(user) {
         return new Promise((resolve, reject) => {
           bcrypt.hash(user.password, bcrypt.genSaltSync(10), null, function (err, hash) {
             if (err) {
@@ -31,5 +30,14 @@ const User = sequelize().define('user', {
       }
     }
   });
+
+User.prototype.validPassword = function(password, callback) {
+  return bcrypt.compare(password, this.password, (err, isMatch) => {
+    if (err) {
+      return callback(err);
+    }
+    callback(null, isMatch);
+  });
+}
 
 module.exports = User;
