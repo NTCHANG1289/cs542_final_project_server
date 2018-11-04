@@ -32,11 +32,7 @@ const localLogin = new LocalStrategy({
 // Setup options fro JWT Strategy
 const jwtOptions = {
   jwtFromRequest: ExtractJwt.fromHeader('authorization'),
-<<<<<<< HEAD
-  secretOrKey: config.secret
-=======
   secretOrKey: process.env.SECRET
->>>>>>> adding authentication for signup, signin, and request that need authorization
 };
 
 // Create JWT Strategy
