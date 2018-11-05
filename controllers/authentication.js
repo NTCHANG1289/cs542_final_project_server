@@ -10,7 +10,7 @@ function tokenForUser(user) {
 };
 
 exports.signin = (req, res, next) => {
-  res.send({ 
+  res.send({
     token: tokenForUser(req.user),
     user: req.user
   });
@@ -51,6 +51,9 @@ exports.signup = (req, res, next) => {
       // console.log(newUser.get({
       //   plain: true
       // }))
+      res.header('Access-Control-Allow-Origin', '*');
+      res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+      res.header('Access-Control-Allow-Headers', 'Content-Type');
       res.send({
         token: tokenForUser(newUser.get({
           plain: true

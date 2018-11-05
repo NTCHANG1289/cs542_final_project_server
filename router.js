@@ -26,6 +26,7 @@ module.exports = app => {
       }
       rows = response.rows;
       client.end();
+      res.
       res.send(rows);
     });
   });
