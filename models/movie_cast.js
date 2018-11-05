@@ -6,7 +6,7 @@ const movie_cast = sequelize().define('movie_cast', {
     movie_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        primaryKey: true
+        primaryKey: true,
         references: {
             model: movie,
             key: 'movie_id',
@@ -18,6 +18,6 @@ const movie_cast = sequelize().define('movie_cast', {
         allowNull: false,
         primaryKey: true
     },
-};
+});
 
 module.exports = movie_cast;

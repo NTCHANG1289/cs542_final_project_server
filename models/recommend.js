@@ -23,6 +23,6 @@ const recommend = sequelize().define('recommend', {
             deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
         }
     }
-};
+});
 
 module.exports = recommend;

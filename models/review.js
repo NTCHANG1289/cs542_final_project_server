@@ -27,6 +27,6 @@ const review = sequelize().define('review', {
         allowNull: false,
         primaryKey: true
     }
-};
+});
 
 module.exports = review;

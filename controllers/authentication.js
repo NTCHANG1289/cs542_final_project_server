@@ -1,5 +1,6 @@
 const jwt = require('jwt-simple');
 const User = require('../models/user');
+const Fav_genre = require('../models/fav_genre');
 
 function tokenForUser(user) {
   const timestamp = new Date().getTime();
@@ -23,17 +24,21 @@ exports.signup = (req, res, next) => {
     email,
     password,
     dob,
-    gender,
-    favGenre
+    gender
   } = req.body;
 
   if (!email || !password) {
     return res.status(422).send({ error: 'You must provide email and password' })
   }
 
-  User.findOne({ where: { email } }).then((existingUser) => {
+  User.findOne({
+    where: { email }, include: [{
+      model: Fav_genre,
+      as: 'fav_genres'
+    }]
+  }).then((existingUser) => {
     // if (err) throw err;
-    // console.log(user);
+    // console.log(existingUser);
     if (existingUser) {
       // return res.send(existingUser)
       return res.status(422).send({
@@ -48,19 +53,39 @@ exports.signup = (req, res, next) => {
       dob,
       gender
     }).then(newUser => {
-      // console.log(newUser.get({
-      //   plain: true
-      // }))
-      res.header('Access-Control-Allow-Origin', '*');
-      res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-      res.header('Access-Control-Allow-Headers', 'Content-Type');
+      // Fav_genre.create({
+      //   user_id: newUser.get('user_id'),
+      //   fav_genre: req.body.fav_Genres
+      // })
+      var promises = req.body.fav_Genres.map(fav_genre => {
+        return Fav_genre.create({
+          user_id: newUser.get('user_id'),
+          fav_genre
+        }).then(newFavGenre =>
+          console.log(newFavGenre)
+        ).catch(err =>
+          console.log(err)
+        );
+      });
+
+      Promise.all(promises)
+        .then(function () {
+          return Promise.resolve(result);
+        }).catch(err =>
+          console.log(err)
+        );
+
       res.send({
         token: tokenForUser(newUser.get({
           plain: true
         })),
         user: newUser
       });
-    });
-
-  })
+    }).catch(err =>
+      console.log(err)
+    )
+  }).catch(err =>
+    console.log(err)
+  )
+})
 }

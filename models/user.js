@@ -2,10 +2,11 @@ const Sequelize = require('sequelize');
 const sequelize = require('../db/getSequelize');
 const bcrypt = require('bcrypt-nodejs');
 const uuid = require('uuid');
+const Fav_genre = require('./fav_genre');
 
 const User = sequelize().define('user', {
   user_id: {
-    type: Sequelize.INTEGER,
+    type: Sequelize.UUID,
     autoIncrement: true,
     primaryKey: true,
     defaultValue: uuid()
@@ -50,5 +51,8 @@ User.prototype.validPassword = function (password, callback) {
     callback(null, isMatch);
   });
 }
+
+User.hasMany(Fav_genre, { as: 'fav_genres', foreignKey: 'user_id' });
+Fav_genre.belongsTo(User, { foreignKey: 'user_id'});
 
 module.exports = User;

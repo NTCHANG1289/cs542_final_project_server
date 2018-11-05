@@ -1,8 +1,7 @@
 const Sequelize = require('sequelize');
 const sequelize = require('../db/getSequelize');
-const bcrypt = require('bcrypt-nodejs');
 
-const movie = sequelize().define('movie', {
+const Movie = sequelize().define('movie', {
     movie_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
@@ -32,6 +31,7 @@ const movie = sequelize().define('movie', {
     description: {
         type: Sequelize.STRING
     }
-};
+});
 
-module.exports = movie;
+
+module.exports =  Movie;
