@@ -2,7 +2,7 @@ const Sequelize = require('sequelize');
 const sequelize = require('../db/getSequelize');
 const User = require('./user');
 
-const Fav_genre = sequelize().define('fav_genres', {
+const Fav_genres = sequelize().define('Fav_genress', {
     user_id: {
         type: Sequelize.UUID,
         allowNull: false,
@@ -13,18 +13,18 @@ const Fav_genre = sequelize().define('fav_genres', {
         //     deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
         // }
     },
-    fav_genre: {
+    Fav_genres: {
         type: Sequelize.STRING,
         allowNull: false,
         // get: function () {
-        //     return JSON.parse(this.getDataValue('fav_genre'));
+        //     return JSON.parse(this.getDataValue('Fav_genres'));
         // },
         // set: function (val) {
-        //     return this.setDataValue('fav_genre', JSON.stringify(val));
+        //     return this.setDataValue('Fav_genres', JSON.stringify(val));
         // }
     }
 }, {
         timestamps: false,
     });
 
-module.exports = Fav_genre;
+module.exports = Fav_genres;

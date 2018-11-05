@@ -1,6 +1,6 @@
 const jwt = require('jwt-simple');
 const User = require('../models/user');
-const Fav_genre = require('../models/fav_genre');
+const Fav_genres = require('../models/Fav_genres');
 
 function tokenForUser(user) {
   const timestamp = new Date().getTime();
@@ -33,8 +33,8 @@ exports.signup = (req, res, next) => {
 
   User.findOne({
     where: { email }, include: [{
-      model: Fav_genre,
-      as: 'fav_genres'
+      model: Fav_genres,
+      as: 'Fav_genress'
     }]
   }).then((existingUser) => {
     // if (err) throw err;
@@ -53,14 +53,14 @@ exports.signup = (req, res, next) => {
       dob,
       gender
     }).then(newUser => {
-      // Fav_genre.create({
+      // Fav_genres.create({
       //   user_id: newUser.get('user_id'),
-      //   fav_genre: req.body.fav_Genres
+      //   Fav_genres: req.body.Fav_genress
       // })
-      var promises = req.body.fav_Genres.map(fav_genre => {
-        return Fav_genre.create({
+      var promises = req.body.Fav_genress.map(Fav_genres => {
+        return Fav_genres.create({
           user_id: newUser.get('user_id'),
-          fav_genre
+          Fav_genres
         }).then(newFavGenre =>
           console.log(newFavGenre)
         ).catch(err =>
@@ -87,5 +87,4 @@ exports.signup = (req, res, next) => {
   }).catch(err =>
     console.log(err)
   )
-})
 }
