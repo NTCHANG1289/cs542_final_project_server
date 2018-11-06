@@ -1,6 +1,7 @@
 const Sequelize = require('sequelize');
 const sequelize = require('../db/getSequelize');
-const bcrypt = require('bcrypt-nodejs');
+
+const Movie = require('./movie');
 
 const Movie_cast = sequelize().define('movie_cast', {
     movie_id: {
@@ -8,7 +9,7 @@ const Movie_cast = sequelize().define('movie_cast', {
         allowNull: false,
         primaryKey: true,
         references: {
-            model: 'movie',
+            model: Movie,
             key: 'movie_id',
             deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
         }
@@ -18,6 +19,9 @@ const Movie_cast = sequelize().define('movie_cast', {
         allowNull: false,
         primaryKey: true
     },
+}, {
+  timestamps: false,
+  freezeTableName: true
 });
 
 module.exports = Movie_cast;

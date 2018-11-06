@@ -6,7 +6,15 @@ const passport = require('passport');
 const requireAuth = passport.authenticate('jwt', { session: false });
 const requireSignin = passport.authenticate('local', { session: false });
 
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
+
+const Movie = require('./models/movie');
+const Movie_cast = require('./models/movie_cast');
+const Movie_genre = require('./models/movie_genre');
 const Recommend = require('./models/recommend');
+
+
 module.exports = app => {
   // app.get('/', requireAuth, (req, res) => {
   //   res.send({ 'hi': 'there' });
@@ -27,59 +35,103 @@ module.exports = app => {
       recommendMovies.push(result.movie_id2);
     }).then(() => {
       res.send(recommendMovies);
-    })
-  })
-  // Jonathan's example: get all movies
+    });
+  });
+
+  // // get all movies
+  // app.get('/movies', (req, res) => {
+  //   const client = dbConnection();
+  //   client.connect();
+  //   var rows;
+  //   client.query('SELECT * from movie_view;', (err, response) => {
+  //     if (err) {
+  //       console.log(err.message);
+  //       throw err;
+  //     }
+  //     rows = response.rows;
+  //     client.end();
+  //     res.send(rows);
+  //   });
+  // });
+
+  // get all movies
   app.get('/movies', (req, res) => {
-    const client = dbConnection();
-    client.connect();
-    var rows;
-    client.query('SELECT * from movie_view;', (err, response) => {
-      if (err) {
-        console.log(err.message);
-        throw err;
-      }
-      rows = response.rows;
-      client.end();
-      res.send(rows);
-    });
+    Movie.findAll({
+      include: [
+        { model: Movie_cast, as: 'actor', attributes: ['actor_name'] },
+        { model: Movie_genre, as: 'genre', attributes: ['genre'] },
+        { model: Recommend, as: 'recommend', attributes: ['movie_id2'] }
+        ]
+    }).then(d => res.send(d));
   });
 
-  // get movie(s) by title. case-insensitive. partial match.
+  // // get movie(s) by title. case-insensitive. partial match.
+  // app.get('/searchtitle/:title', (req, res) => {
+  //   const client = dbConnection();
+  //   client.connect();
+  //   var rows;
+  //   let param = "'%" + req.params.title + "%'";
+  //   let queryString = 'SELECT * FROM movie_view WHERE title ILIKE ' + param;
+  //   client.query(queryString, (err, response) => {
+  //     if (err) {
+  //       console.log(err.message);
+  //       throw err;
+  //     }
+  //     rows = response.rows;
+  //     client.end();
+  //     res.send(rows);
+  //   });
+  // });
+
+  // get movie(s) by title.
   app.get('/searchtitle/:title', (req, res) => {
-    const client = dbConnection();
-    client.connect();
-    var rows;
-    let param = "'%" + req.params.title + "%'";
-    let queryString = 'SELECT * FROM movie_view WHERE title ILIKE ' + param;
-    client.query(queryString, (err, response) => {
-      if (err) {
-        console.log(err.message);
-        throw err;
+    let query = {};
+    query.include = [
+      { model: Movie_cast, as: 'actor', attributes: ['actor_name'] },
+      { model: Movie_genre, as: 'genre', attributes: ['genre'] },
+      { model: Recommend, as: 'recommend', attributes: ['movie_id2'] }
+    ];
+    query.where = {
+      title: {
+        [Op.iLike]: "%" + req.params.title + "%"
       }
-      rows = response.rows;
-      client.end();
-      res.send(rows);
-    });
+    };
+    Movie.findAll(query).then(d => res.send(d));
   });
 
-  // get movies(s) by director name. case-insensitive. partial match.
+  // // get movies(s) by director name. case-insensitive. partial match.
+  // app.get('/searchdirector/:director', (req, res) => {
+  //   const client = dbConnection();
+  //   client.connect();
+  //   var rows;
+  //   let param = "'%" + req.params.director + "%'";
+  //   let queryString = 'SELECT * FROM movie_view WHERE director ILIKE ' + param + 'ORDER BY year DESC';
+  //   client.query(queryString, (err, response) => {
+  //     if (err) {
+  //       console.log(err.message);
+  //       throw err;
+  //     }
+  //     rows = response.rows;
+  //     client.end();
+  //     res.send(rows);
+  //   });
+  // });
+
   app.get('/searchdirector/:director', (req, res) => {
-    const client = dbConnection();
-    client.connect();
-    var rows;
-    let param = "'%" + req.params.director + "%'";
-    let queryString = 'SELECT * FROM movie_view WHERE director ILIKE ' + param + 'ORDER BY year DESC';
-    client.query(queryString, (err, response) => {
-      if (err) {
-        console.log(err.message);
-        throw err;
+    let query = {};
+    query.include = [
+      { model: Movie_cast, as: 'actor', attributes: ['actor_name'] },
+      { model: Movie_genre, as: 'genre', attributes: ['genre'] },
+      { model: Recommend, as: 'recommend', attributes: ['movie_id2'] }
+    ];
+    query.where = {
+      director: {
+        [Op.iLike]: "%" + req.params.director + "%"
       }
-      rows = response.rows;
-      client.end();
-      res.send(rows);
-    });
+    };
+    Movie.findAll(query).then(d => res.send(d));
   });
+
 
   // get movies(s) by actor name. case-insensitive. partial match.
   app.get('/searchactor/:actor', (req, res) => {

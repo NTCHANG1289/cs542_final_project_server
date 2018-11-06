@@ -1,13 +1,15 @@
 const Sequelize = require('sequelize');
 const sequelize = require('../db/getSequelize');
 
+const Movie = require('./movie');
+
 const Recommend = sequelize().define('recommend', {
     movie_id1: {
         type: Sequelize.INTEGER,
         allowNull: false,
         primaryKey: true,
         references: {
-            model: 'movie',
+            model: Movie,
             key: 'movie_id',
             deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
         }
@@ -17,7 +19,7 @@ const Recommend = sequelize().define('recommend', {
         allowNull: false,
         primaryKey: true,
         references: {
-            model: 'movie',
+            model: Movie,
             key: 'movie_id',
             deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
         }
