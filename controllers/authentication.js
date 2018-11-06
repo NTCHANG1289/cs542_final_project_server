@@ -11,6 +11,11 @@ function tokenForUser(user) {
 };
 
 exports.signin = (req, res, next) => {
+  // let fav_genres = [];
+  // req.user.getFav_genre().then(fav_genre => {
+  //   fav_genres.push(fav_genre);
+  // })
+  console.log(req.fav_genres);
   res.send({
     token: tokenForUser(req.user),
     user: req.user
@@ -53,11 +58,6 @@ exports.signup = (req, res, next) => {
       dob,
       gender
     }).then(newUser => {
-      // Fav_genres.create({
-      //   user_id: newUser.get('user_id'),
-      //   Fav_genres: req.body.Fav_genress
-      // })
-      console.log(req.body);
       var promises = req.body.fav_genres.map(fav_genre => {
         return Fav_genre.create({
           user_id: newUser.get('user_id'),

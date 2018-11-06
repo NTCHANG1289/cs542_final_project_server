@@ -1,14 +1,13 @@
 const Sequelize = require('sequelize');
 const sequelize = require('../db/getSequelize');
-const bcrypt = require('bcrypt-nodejs');
 
-const review = sequelize().define('review', {
+const Review = sequelize().define('review', {
     user_id: {
         type: Sequelize.TEXT,
         allowNull: false,
         primaryKey: true,
         references: {
-            model: user,
+            model: 'user',
             key: 'user_id',
             deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
         }
@@ -29,4 +28,4 @@ const review = sequelize().define('review', {
     }
 });
 
-module.exports = review;
+module.exports = Review;

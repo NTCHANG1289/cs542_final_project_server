@@ -1,14 +1,13 @@
 const Sequelize = require('sequelize');
 const sequelize = require('../db/getSequelize');
-const bcrypt = require('bcrypt-nodejs');
 
-const movie_genre = sequelize().define('movie_genre', {
+const Movie_genre = sequelize().define('movie_genre', {
     movie_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         primaryKey: true,
         references: {
-            model: movie,
+            model: 'movie',
             key: 'movie_id',
             deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
         }
@@ -20,4 +19,4 @@ const movie_genre = sequelize().define('movie_genre', {
     },
 });
 
-module.exports = movie_genre;
+module.exports = Movie_genre;

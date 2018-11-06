@@ -25,6 +25,7 @@ const Fav_genre = sequelize().define('fav_genre', {
     }
 }, {
         timestamps: false,
+        freezeTableName: true,
     });
 
 module.exports = Fav_genre;

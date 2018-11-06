@@ -6,6 +6,7 @@ const passport = require('passport');
 const requireAuth = passport.authenticate('jwt', { session: false });
 const requireSignin = passport.authenticate('local', { session: false });
 
+const Recommend = require('./models/recommend');
 module.exports = app => {
   // app.get('/', requireAuth, (req, res) => {
   //   res.send({ 'hi': 'there' });
@@ -14,6 +15,20 @@ module.exports = app => {
   app.post('/signin', requireSignin, Authentication.signin)
 
   app.post('/signup', Authentication.signup);
+
+  app.get('/movies/recommend/:movie_id', (req, res) => {
+    const {
+      movie_id
+    } = req.params;
+    // console.log(movie_id);
+    let recommendMovies = [];
+    Recommend.findAll({ where: { movie_id1: movie_id }, raw: true }).each(result => {
+      // console.log(movie_id);
+      recommendMovies.push(result.movie_id2);
+    }).then(() => {
+      res.send(recommendMovies);
+    })
+  })
   // Jonathan's example: get all movies
   app.get('/movies', (req, res) => {
     const client = dbConnection();
@@ -26,7 +41,6 @@ module.exports = app => {
       }
       rows = response.rows;
       client.end();
-      res.
       res.send(rows);
     });
   });

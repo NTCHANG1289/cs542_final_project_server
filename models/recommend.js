@@ -1,14 +1,13 @@
 const Sequelize = require('sequelize');
 const sequelize = require('../db/getSequelize');
-const bcrypt = require('bcrypt-nodejs');
 
-const recommend = sequelize().define('recommend', {
+const Recommend = sequelize().define('recommend', {
     movie_id1: {
         type: Sequelize.INTEGER,
         allowNull: false,
         primaryKey: true,
         references: {
-            model: movie,
+            model: 'movie',
             key: 'movie_id',
             deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
         }
@@ -18,11 +17,14 @@ const recommend = sequelize().define('recommend', {
         allowNull: false,
         primaryKey: true,
         references: {
-            model: movie,
+            model: 'movie',
             key: 'movie_id',
             deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
         }
     }
-});
+}, {
+        timestamps: false,
+        freezeTableName: true
+    });
 
-module.exports = recommend;
+module.exports = Recommend;
