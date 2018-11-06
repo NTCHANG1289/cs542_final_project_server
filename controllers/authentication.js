@@ -15,7 +15,7 @@ exports.signin = (req, res, next) => {
   // req.user.getFav_genre().then(fav_genre => {
   //   fav_genres.push(fav_genre);
   // })
-  console.log(req.fav_genres);
+  // console.log(req.fav_genres);
   res.send({
     token: tokenForUser(req.user),
     user: req.user
@@ -58,23 +58,23 @@ exports.signup = (req, res, next) => {
       dob,
       gender
     }).then(newUser => {
-      var promises = req.body.fav_genres.map(fav_genre => {
-        return Fav_genre.create({
-          user_id: newUser.get('user_id'),
-          fav_genre
-        }).then(newFavGenre =>
-          console.log(newFavGenre)
-        ).catch(err =>
-          console.log(err)
-        );
-      });
+      // var promises = req.body.fav_genres.map(fav_genre => {
+      //   return Fav_genre.create({
+      //     user_id: newUser.get('user_id'),
+      //     fav_genre
+      //   }).then(newFavGenre =>
+      //     console.log(newFavGenre)
+      //   ).catch(err =>
+      //     console.log(err)
+      //   );
+      // });
 
-      Promise.all(promises)
-        .then(function () {
-          return Promise.resolve(result);
-        }).catch(err =>
-          console.log(err)
-        );
+      // Promise.all(promises)
+      //   .then(function () {
+      //     return Promise.resolve(result);
+      //   }).catch(err =>
+      //     console.log(err)
+      //   );
 
       res.send({
         token: tokenForUser(newUser.get({
@@ -82,10 +82,12 @@ exports.signup = (req, res, next) => {
         })),
         user: newUser
       });
-    }).catch(err =>
+    }).catch(err => {
+      console.log(err);
       res.status(422).send({
         error: 'Fail to sign up'
       })
+    }
     )
   }).catch(err =>
     console.log(err)

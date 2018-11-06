@@ -24,11 +24,11 @@ module.exports = app => {
 
   app.post('/signup', Authentication.signup);
 
-  app.get('/movies/recommend/:movie_id', (req, res) => {
+  app.get('/movies/recommend', (req, res) => {
     const {
       movie_id
-    } = req.params;
-    // console.log(movie_id);
+    } = req.query;
+    console.log(movie_id);
     let recommendMovies = [];
     Recommend.findAll({ where: { movie_id1: movie_id }, raw: true }).each(result => {
       // console.log(movie_id);

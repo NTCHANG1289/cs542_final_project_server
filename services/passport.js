@@ -26,19 +26,19 @@ const localLogin = new LocalStrategy({
     // }
     // ));
     let fav_genres = [];
-    var promises = user.getFav_genre().each(fav_genre => {
-      return fav_genres.push(fav_genre);
-    })
+    // var promises = user.getFav_genre().each(fav_genre => {
+    //   return fav_genres.push(fav_genre);
+    // })
 
-    let result = Promise.all([promises])
-      .then(function () {
-        return Promise.resolve(result);
-      }).catch(err =>
-        console.log(err)
-      );
+    // let result = Promise.all([promises])
+    //   .then(function () {
+    //     return Promise.resolve(result);
+    //   }).catch(err =>
+    //     console.log(err)
+    //   );
 
-    result.then(result => console.log(result));
-    console.log(fav_genres);
+    // result.then(result => console.log(result));
+    // console.log(fav_genres);
 
     if (!user) {
       return done(null, false);
@@ -54,7 +54,7 @@ const localLogin = new LocalStrategy({
       if (!isMatch) {
         return done(null, false);
       }
-      return done(null, { user, fav_genres });
+      return done(null, user);
 
     })
   })
