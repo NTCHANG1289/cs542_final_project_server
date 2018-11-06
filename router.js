@@ -34,7 +34,7 @@ module.exports = app => {
       // console.log(movie_id);
       recommendMovies.push(result.movie_id2);
     }).then(() => {
-      res.send(recommendMovies);
+    Movie.findAll({ where: {movie_id: recommendMovies}}).then((d) => res.send(d));
     });
   });
 

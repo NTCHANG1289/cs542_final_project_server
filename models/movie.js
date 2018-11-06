@@ -34,6 +34,9 @@ const Movie = sequelize().define('movie', {
   },
   description: {
     type: Sequelize.STRING
+  },
+  gross: {
+    type: Sequelize.INTEGER
   }
 }, {
   timestamps: false,
