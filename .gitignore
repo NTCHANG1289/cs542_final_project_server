@@ -22,3 +22,5 @@ yarn-error.log*
 
 cs542_final_project_server.code-workspace
 /config/config.json
+
+.idea/
