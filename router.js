@@ -13,6 +13,7 @@ const Movie = require('./models/movie');
 const Movie_cast = require('./models/movie_cast');
 const Movie_genre = require('./models/movie_genre');
 const Recommend = require('./models/recommend');
+const Review = require('./models/review');
 
 
 module.exports = app => {
@@ -82,6 +83,33 @@ module.exports = app => {
   //     res.send(rows);
   //   });
   // });
+
+  // get all genres
+  app.get('/genres', (req, res) => {
+    movie_list = [];
+    Movie_genre.aggregate('genre', 'DISTINCT', { plain: false })
+      .each(result => (
+        movie_list.push(result.DISTINCT)))
+      .then(() => res.send(movie_list));
+  });
+
+  // get all actors
+  app.get('/actors', (req, res) => {
+    actor_list = [];
+      Movie_cast.aggregate('actor_name', 'DISTINCT', { plain: false })
+        .each(result => (
+          actor_list.push(result.DISTINCT)))
+        .then(() => res.send(actor_list));
+  });
+
+  // get all directors
+  app.get('/directors', (req, res) => {
+    director_list = [];
+    Movie.aggregate('director', 'DISTINCT', { plain: false })
+      .each(result => (
+        director_list.push(result.DISTINCT)))
+      .then(() => res.send(director_list));
+  });
 
   // get movie(s) by title.
   app.get('/searchtitle/:title', (req, res) => {
@@ -185,6 +213,7 @@ module.exports = app => {
   //   });
   // });
 
+  // get movies(s) by genre. case-insensitive. partial match.
   app.get('/searchgenre/:genre', (req, res) => {
 
     let param = "%" + req.params.genre + "%";
@@ -201,23 +230,47 @@ module.exports = app => {
       });
   });
 
-  // get reviews by movie title.
-  app.get('/searchtitle/:title/review', (req, res) => {
-    const client = dbConnection();
-    client.connect();
-    var rows;
-    let param = "'%" + req.params.title + "%'";
-    let queryString = 'SELECT * FROM review WHERE review.movie_id IN (SELECT movie_id FROM movie_view WHERE title ILIKE ' + param + ')';
-    client.query(queryString, (err, response) => {
-      if (err) {
-        console.log(err.message);
-        throw err;
-      }
-      rows = response.rows;
-      client.end();
-      res.send(rows);
-    });
+  // get review for the detail page
+
+  // create review
+  //app.get('/reviews', (req, res) => {
+  app.post('/reviews', (req, res) => {
+
+    const {
+      user_id,
+      movie_id,
+      rating,
+      review,
+      date
+    } = req.body;
+
+    Review.create({
+      user_id,
+      movie_id,
+      rating,
+      review,
+      date
+    }).then(d => res.send(d));
+
   });
+
+  // get reviews by movie title.
+  // app.get('/searchtitle/:title/review', (req, res) => {
+  //   const client = dbConnection();
+  //   client.connect();
+  //   var rows;
+  //   let param = "'%" + req.params.title + "%'";
+  //   let queryString = 'SELECT * FROM review WHERE review.movie_id IN (SELECT movie_id FROM movie_view WHERE title ILIKE ' + param + ')';
+  //   client.query(queryString, (err, response) => {
+  //     if (err) {
+  //       console.log(err.message);
+  //       throw err;
+  //     }
+  //     rows = response.rows;
+  //     client.end();
+  //     res.send(rows);
+  //   });
+  // });
 
   //recommend
   // app.get('/searchtitle/:title/recommend', (req, res) => {

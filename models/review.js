@@ -34,10 +34,15 @@ const Review = sequelize().define('review', {
         type: Sequelize.TEXT,
         allowNull: false,
         primaryKey: true
+    },
+    date: {
+        type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.NOW
     }
 }, {
   timestamps: false,
-  //freezeTableName: true
+  freezeTableName: true
 });
 
 module.exports = Review;
