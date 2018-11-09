@@ -145,7 +145,7 @@ module.exports = app => {
   //   });
   // });
 
-  app.get('/searchdirector/:director', (req, res) => {
+  app.get('/searchdirector', (req, res) => {
     let query = {};
     query.include = [
       { model: Movie_cast, as: 'actor', attributes: ['actor_name'] },
@@ -154,7 +154,7 @@ module.exports = app => {
     ];
     query.where = {
       director: {
-        [Op.iLike]: "%" + req.params.director + "%"
+        [Op.iLike]: "%" + req.query.director + "%"
       }
     };
     Movie.findAll(query).then(d => res.send(d));
