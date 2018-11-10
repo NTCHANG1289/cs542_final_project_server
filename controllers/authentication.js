@@ -1,3 +1,4 @@
+const util = require('util')
 const jwt = require('jwt-simple');
 const User = require('../models/user');
 const Fav_genre = require('../models/fav_genre');
@@ -51,24 +52,21 @@ exports.signup = (req, res, next) => {
       })
     }
 
+    let fav_genres = [];
     const user = User.create({
       username,
       email,
       password,
       dob,
       gender
-    }).then(newUser => {
-      // var promises = req.body.fav_genres.map(fav_genre => {
-      //   return Fav_genre.create({
-      //     user_id: newUser.get('user_id'),
-      //     fav_genre
-      //   }).then(newFavGenre =>
-      //     console.log(newFavGenre)
-      //   ).catch(err =>
-      //     console.log(err)
-      //   );
-      // });
-
+    }).then(async newUser => {
+      fav_genres = await req.body.fav_genres.map(fav_genre => {
+        return Fav_genre.create({
+          user_id: newUser.get('user_id'),
+          fav_genre
+        }).then(genre => genre)
+      });
+      console.log('fav_genres', fav_genres);
       // Promise.all(promises)
       //   .then(function () {
       //     return Promise.resolve(result);

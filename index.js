@@ -1,4 +1,5 @@
 require('./config/config');
+require('./db/redisClient');
 const express = require('express');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
