@@ -222,7 +222,7 @@ module.exports = app => {
       }).then(user => {
         getreview.push(
           Object.assign({}, review, {
-            username: result.dataValues.username
+            username: user.dataValues.username
           })
         )
       })
