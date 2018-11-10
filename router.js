@@ -9,6 +9,7 @@ const requireSignin = passport.authenticate('local', { session: false });
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
+const User = require('./models/user');
 const Movie = require('./models/movie');
 const Movie_cast = require('./models/movie_cast');
 const Movie_genre = require('./models/movie_genre');
@@ -36,7 +37,7 @@ module.exports = app => {
       // console.log(movie_id);
       recommendMovies.push(result.movie_id2);
     }).then(() => {
-    Movie.findAll({ where: {movie_id: recommendMovies}}).then((d) => res.send(d));
+      Movie.findAll({ where: { movie_id: recommendMovies } }).then((d) => res.send(d));
     });
   });
 
@@ -63,7 +64,7 @@ module.exports = app => {
         { model: Movie_cast, as: 'actor', attributes: ['actor_name'] },
         { model: Movie_genre, as: 'genre', attributes: ['genre'] },
         { model: Recommend, as: 'recommend', attributes: ['movie_id2'] }
-        ]
+      ]
     }).then(d => res.send(d));
   });
 
@@ -79,10 +80,10 @@ module.exports = app => {
   // get all actors
   app.get('/actors', (req, res) => {
     actor_list = [];
-      Movie_cast.aggregate('actor_name', 'DISTINCT', { plain: false })
-        .each(result => (
-          actor_list.push(result.DISTINCT)))
-        .then(() => res.send(actor_list));
+    Movie_cast.aggregate('actor_name', 'DISTINCT', { plain: false })
+      .each(result => (
+        actor_list.push(result.DISTINCT)))
+      .then(() => res.send(actor_list));
   });
 
   // get all directors
@@ -132,13 +133,15 @@ module.exports = app => {
     let param = "%" + req.params.actor + "%";
     let actorMovies = [];
     Movie_cast.findAll({
-      where: { actor_name: { [Op.iLike]: param}
-      }, raw: true }).each(result => {
+      where: {
+        actor_name: { [Op.iLike]: param }
+      }, raw: true
+    }).each(result => {
       // console.log(movie_id);
       actorMovies.push(result.movie_id)
-      }).then(() => {
+    }).then(() => {
       //console.log(actorMovies)
-        Movie.findAll({ where: {movie_id: actorMovies}}).then((d) => res.send(d));
+      Movie.findAll({ where: { movie_id: actorMovies } }).then((d) => res.send(d));
     });
   });
 
@@ -148,36 +151,38 @@ module.exports = app => {
     let param = "%" + req.params.genre + "%";
     let genreMovies = [];
     Movie_genre.findAll({
-      where: { genre: { [Op.iLike]: param}
-      }, raw: true }).each(result => {
+      where: {
+        genre: { [Op.iLike]: param }
+      }, raw: true
+    }).each(result => {
 
-        genreMovies.push(result.movie_id)
+      genreMovies.push(result.movie_id)
 
-      }).then(() => {
-        //console.log(genreMovies)
-        Movie.findAll({ where: {movie_id: genreMovies}}).then((d) => res.send(d));
-      });
+    }).then(() => {
+      //console.log(genreMovies)
+      Movie.findAll({ where: { movie_id: genreMovies } }).then((d) => res.send(d));
+    });
   });
 
-  // get review by movie_id
-  app.get('/reviewbymovie/:movie_id', (req, res) => {
-
-    Review.findAll({
-      where: {
-        movie_id: req.params.movie_id
-      }
-    }).then((d) => res.send(d));
-  });
-
-  // get review by user_id
-  app.get('/reviewbyuser/:user_id', (req, res) => {
-
-    Review.findAll({
-      where: {
-        user_id: req.params.user_id
-      }
-    }).then((d) => res.send(d));
- });
+ //  // get review by movie_id
+ //  app.get('/reviewbymovie/:movie_id', (req, res) => {
+ //
+ //    Review.findAll({
+ //      where: {
+ //        movie_id: req.params.movie_id
+ //      }
+ //    }).then((d) => res.send(d));
+ //  });
+ //
+ //  // get review by user_id
+ //  app.get('/reviewbyuser/:user_id', (req, res) => {
+ //
+ //    Review.findAll({
+ //      where: {
+ //        user_id: req.params.user_id
+ //      }
+ //    }).then((d) => res.send(d));
+ // });
 
 
   // create review
@@ -199,6 +204,54 @@ module.exports = app => {
       date
     }).then(d => res.send(d));
 
+  });
+
+
+  app.get('/reviewbymovie/:movie_id', (req, res) => {
+    let getreview = [];
+    Review.findAll({
+      where: {
+        movie_id: req.params.movie_id
+      }
+    }).each(async result => {
+      const review = result.dataValues;
+      await User.find({
+        where: {
+          user_id: review.user_id
+        }
+      }).then(user => {
+        getreview.push(
+          Object.assign({}, review, {
+            username: result.dataValues.username
+          })
+        )
+      })
+    }).then(() => {
+      res.send(getreview)
+    });
+
+  });
+
+  app.get('/reviewbyuser/:user_id', (req, res) => {
+    let getreview = [];
+    Review.findAll({
+      where: {
+        user_id: req.params.user_id
+      }
+    }).each(async result => {
+      const review = result.dataValues;
+      await Movie.find({
+        where: {
+          movie_id: review.movie_id
+        }
+      }).then(movie => {
+        getreview.push(Object.assign({}, review, {
+          movie: movie.dataValues
+        }))
+      })
+    }).then(() => {
+      res.send(getreview)
+    });
   });
 
 

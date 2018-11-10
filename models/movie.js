@@ -56,8 +56,5 @@ Movie_genre.belongsTo(Movie, { foreignKey: 'movie_id'});
 Movie.hasMany(Recommend, { as: 'recommend', foreignKey: 'movie_id1' });
 Recommend.belongsTo(Movie, { foreignKey: 'movie_id1'});
 
-// Movie + Review
-//Movie.hasMany(Review, { as: 'review', foreignKey: 'movie_id' });
-//Review.belongsTo(Movie, { foreignKey: 'movie_id'});
 
 module.exports = Movie;

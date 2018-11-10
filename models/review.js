@@ -46,4 +46,17 @@ const Review = sequelize().define('review', {
 //Review.belongsTo(Movie, { foreignKey: 'movie_id'});
 //Review.belongsTo(User, { foreignKey: 'user_id'});
 
+
+// Review.belongsTo(User, { foreignKey: 'user_id'});
+
+// Review.associate = (models) => {
+//     Review.belongsTo(models.Movie, {
+//         foreignKey: 'movie_id'
+//     });
+//     Review.belongsTo(models.User, {
+//         foreignKey: 'user_id'
+//     });
+// };
+
+
 module.exports = Review;
