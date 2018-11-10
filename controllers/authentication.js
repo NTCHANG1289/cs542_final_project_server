@@ -84,7 +84,7 @@ exports.signup = (req, res, next) => {
       console.log(err);
       res.status(422).send({
         error: 'Fail to sign up'
-      })
+      });
     }
     )
   }).catch(err =>

@@ -44,16 +44,18 @@ module.exports = app => {
   // recommend by fav_genre
   app.get('/recommend/:user_id', (req, res) => {
 
-    let all_genre =[];
+    let all_genre = [];
     let all_movie = [];
 
     Fav_genre.findAll({
-      where: { user_id: req.params.user_id }, raw: true })
+      where: { user_id: req.params.user_id }, raw: true
+    })
       .each(d => all_genre.push(d.fav_genre))
       .then(() => Movie_genre.findAll({
-          where: {genre: all_genre}})
-      .each(d => all_movie.push(d.movie_id))
-      .then(() => Movie.findAll({where: {movie_id: all_movie}}).then(d => res.send(d))));
+        where: { genre: all_genre }
+      })
+        .each(d => all_movie.push(d.movie_id))
+        .then(() => Movie.findAll({ where: { movie_id: all_movie } }).then(d => res.send(d))));
 
   });
 
@@ -164,30 +166,29 @@ module.exports = app => {
     });
   });
 
- //  // get review by movie_id
- //  app.get('/reviewbymovie/:movie_id', (req, res) => {
- //
- //    Review.findAll({
- //      where: {
- //        movie_id: req.params.movie_id
- //      }
- //    }).then((d) => res.send(d));
- //  });
- //
- //  // get review by user_id
- //  app.get('/reviewbyuser/:user_id', (req, res) => {
- //
- //    Review.findAll({
- //      where: {
- //        user_id: req.params.user_id
- //      }
- //    }).then((d) => res.send(d));
- // });
+  //  // get review by movie_id
+  //  app.get('/reviewbymovie/:movie_id', (req, res) => {
+  //
+  //    Review.findAll({
+  //      where: {
+  //        movie_id: req.params.movie_id
+  //      }
+  //    }).then((d) => res.send(d));
+  //  });
+  //
+  //  // get review by user_id
+  //  app.get('/reviewbyuser/:user_id', (req, res) => {
+  //
+  //    Review.findAll({
+  //      where: {
+  //        user_id: req.params.user_id
+  //      }
+  //    }).then((d) => res.send(d));
+  // });
 
 
   // create review
-  app.post('/reviews', (req, res) => {
-
+  app.post('/review', (req, res) => {
     const {
       user_id,
       movie_id,
@@ -202,10 +203,49 @@ module.exports = app => {
       rating,
       review,
       date
-    }).then(d => res.send(d));
-
+    }).then(d => res.send(d)).catch(err => {
+      res.status(422).send({
+        error: 'Fail to sign up'
+      });
+    });
   });
 
+  //update review
+  app.put('/review', (req, res) => {
+    const {
+      user_id,
+      movie_id,
+      rating,
+      review,
+      date
+    } = req.body;
+
+    Review.find({
+      where: {
+        user_id,
+        movie_id
+      }
+    }).then(existReview => {
+      if (existReview) {
+        Review.update({
+          review,
+          rating
+        },
+          {
+            where: {
+              user_id,
+              movie_id
+            }
+          }).then(review => {
+            res.send(review);
+          }).catch(err => res.status(422).send({
+            error: 'Fail to update review'
+          }));
+      }
+    }).catch(err => res.status(422).send({
+      error: 'Fail to update review'
+    }))
+  });
 
   app.get('/reviewbymovie/:movie_id', (req, res) => {
     let getreview = [];
