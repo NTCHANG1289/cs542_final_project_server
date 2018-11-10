@@ -4,6 +4,7 @@ const sequelize = require('../db/getSequelize');
 const Movie_cast = require('./movie_cast');
 const Movie_genre = require('./movie_genre');
 const Recommend = require('./recommend');
+const Review = require('./review');
 
 const Movie = sequelize().define('movie', {
   movie_id: {
@@ -55,5 +56,8 @@ Movie_genre.belongsTo(Movie, { foreignKey: 'movie_id'});
 Movie.hasMany(Recommend, { as: 'recommend', foreignKey: 'movie_id1' });
 Recommend.belongsTo(Movie, { foreignKey: 'movie_id1'});
 
+// Movie + Review
+//Movie.hasMany(Review, { as: 'review', foreignKey: 'movie_id' });
+//Review.belongsTo(Movie, { foreignKey: 'movie_id'});
 
 module.exports = Movie;

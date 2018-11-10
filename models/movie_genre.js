@@ -7,12 +7,12 @@ const Movie_genre = sequelize().define('movie_genre', {
     movie_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        primaryKey: true,
-        references: {
-            model: Movie,
-            key: 'movie_id',
-            deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
-        }
+        primaryKey: true
+        // references: {
+        //     model: Movie,
+        //     key: 'movie_id',
+        //     deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
+        // }
     },
     genre: {
         type: Sequelize.STRING,

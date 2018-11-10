@@ -7,12 +7,12 @@ const Movie_cast = sequelize().define('movie_cast', {
     movie_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        primaryKey: true,
-        references: {
-            model: Movie,
-            key: 'movie_id',
-            deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
-        }
+        primaryKey: true
+        // references: {
+        //     model: Movie,
+        //     key: 'movie_id',
+        //     deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
+        // }
     },
     actor_name: {
         type: Sequelize.STRING,

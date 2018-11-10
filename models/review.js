@@ -20,20 +20,18 @@ const Review = sequelize().define('review', {
         allowNull: false,
         primaryKey: true,
         references: {
-          model: Movie,
-          key: 'movie_id',
-          deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
-      }
+            model: Movie,
+            key: 'movie_id',
+            deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
+        }
     },
     rating: {
         type: Sequelize.INTEGER,
-        allowNull: false,
-        primaryKey: true
+        allowNull: false
     },
     review: {
         type: Sequelize.TEXT,
-        allowNull: false,
-        primaryKey: true
+        allowNull: false
     },
     date: {
         type: Sequelize.DATE,
@@ -44,5 +42,8 @@ const Review = sequelize().define('review', {
   timestamps: false,
   freezeTableName: true
 });
+
+//Review.belongsTo(Movie, { foreignKey: 'movie_id'});
+//Review.belongsTo(User, { foreignKey: 'user_id'});
 
 module.exports = Review;

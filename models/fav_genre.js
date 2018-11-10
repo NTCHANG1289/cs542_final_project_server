@@ -6,9 +6,9 @@ const Fav_genre = sequelize().define('fav_genre', {
     user_id: {
         type: Sequelize.UUID,
         allowNull: false,
-        primaryKey: true,
+        primaryKey: true
         // references: {
-        //     model: 'users',
+        //     model: User,
         //     key: 'user_id',
         //     deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
         // }
@@ -16,12 +16,7 @@ const Fav_genre = sequelize().define('fav_genre', {
     fav_genre: {
         type: Sequelize.STRING,
         allowNull: false,
-        // get: function () {
-        //     return JSON.parse(this.getDataValue('Fav_genres'));
-        // },
-        // set: function (val) {
-        //     return this.setDataValue('Fav_genres', JSON.stringify(val));
-        // }
+        primaryKey: true
     }
 }, {
         timestamps: false,
