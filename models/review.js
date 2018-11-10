@@ -28,12 +28,12 @@ const Review = sequelize().define('review', {
     rating: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        primaryKey: true
+        primaryKey: false
     },
     review: {
         type: Sequelize.TEXT,
         allowNull: false,
-        primaryKey: true
+        primaryKey: false
     },
     date: {
         type: Sequelize.DATE,
@@ -44,5 +44,18 @@ const Review = sequelize().define('review', {
   timestamps: false,
   freezeTableName: true
 });
+
+
+// Review.belongsTo(User, { foreignKey: 'user_id'});
+
+// Review.associate = (models) => {
+//     Review.belongsTo(models.Movie, {
+//         foreignKey: 'movie_id'
+//     });
+//     Review.belongsTo(models.User, {
+//         foreignKey: 'user_id'
+//     });
+// };
+
 
 module.exports = Review;

@@ -254,6 +254,34 @@ module.exports = app => {
 
   });
 
+
+  app.get('/reviewbymovie/:movie_id', (req, res) => {
+      let getreview = [];
+      Review.findAll({
+          where: {
+            movie_id: req.params.movie_id
+          }
+      }).each(result => {
+
+          getreview.push(result.review)
+
+      }).then(() => res.send(getreview));
+
+  });
+
+  app.get('/reviewbyuser/:user_id', (req, res) => {
+      let getreview = [];
+      Review.findAll({
+          where: {
+              user_id: req.params.user_id
+          }
+      }).each(result => {
+
+          getreview.push(result.review)
+
+      }).then(() => res.send(getreview));
+
+  });
   // get reviews by movie title.
   // app.get('/searchtitle/:title/review', (req, res) => {
   //   const client = dbConnection();
