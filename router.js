@@ -258,13 +258,17 @@ module.exports = app => {
             }
           }).then(review => {
             res.send(review);
-          }).catch(err => res.status(422).send({
-            error: 'Fail to update review'
-          }));
+          }).catch(err => {
+            res.status(422).send({
+              error: err.message
+            })
+          });
       }
-    }).catch(err => res.status(422).send({
-      error: 'Fail to update review'
-    }))
+    }).catch(err => {
+      res.status(422).send({
+        error: err.message
+      })
+    })
   });
 
   app.get('/reviewbymovie/:movie_id', (req, res) => {
