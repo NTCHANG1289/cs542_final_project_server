@@ -114,7 +114,27 @@ module.exports = app => {
   });
 
   // get movie(s) by director
-  app.get('/search/:director', (req, res) => {
+  // app.get('/search/:director', (req, res) => {
+  // // get movies(s) by director name. case-insensitive. partial match.
+  // app.get('/searchdirector/:director', (req, res) => {
+  //   const client = dbConnection();
+  //   client.connect();
+  //   var rows;
+  //   let param = "'%" + req.params.director + "%'";
+  //   let queryString = 'SELECT * FROM movie_view WHERE director ILIKE ' + param + 'ORDER BY year DESC';
+  //   client.query(queryString, (err, response) => {
+  //     if (err) {
+  //       console.log(err.message);
+  //       throw err;
+  //     }
+  //     rows = response.rows;
+  //     client.end();
+  //     res.send(rows);
+  //   });
+  // });
+
+  app.get('/searchdirector', (req, res) => {
+    console.log('director', req.query.director);
     let query = {};
     query.include = [
       { model: Movie_cast, as: 'actor', attributes: ['actor_name'] },
