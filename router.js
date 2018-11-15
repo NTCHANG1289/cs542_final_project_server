@@ -42,13 +42,13 @@ module.exports = app => {
   });
 
   // recommend by fav_genre
-  app.get('/recommend/:user_id', (req, res) => {
-
+  app.get('/user/recommend', (req, res) => {
+    console.log(req.query.user_id);
     let all_genre = [];
     let all_movie = [];
 
     Fav_genre.findAll({
-      where: { user_id: req.params.user_id }, raw: true
+      where: { user_id: req.query.user_id }, raw: true
     })
       .each(d => all_genre.push(d.fav_genre))
       .then(() => Movie_genre.findAll({
