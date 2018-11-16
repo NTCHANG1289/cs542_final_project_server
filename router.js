@@ -113,25 +113,6 @@ module.exports = app => {
     Movie.findAll(query).then(d => res.send(d));
   });
 
-  // get movie(s) by director
-  // app.get('/search/:director', (req, res) => {
-  // // get movies(s) by director name. case-insensitive. partial match.
-  // app.get('/searchdirector/:director', (req, res) => {
-  //   const client = dbConnection();
-  //   client.connect();
-  //   var rows;
-  //   let param = "'%" + req.params.director + "%'";
-  //   let queryString = 'SELECT * FROM movie_view WHERE director ILIKE ' + param + 'ORDER BY year DESC';
-  //   client.query(queryString, (err, response) => {
-  //     if (err) {
-  //       console.log(err.message);
-  //       throw err;
-  //     }
-  //     rows = response.rows;
-  //     client.end();
-  //     res.send(rows);
-  //   });
-  // });
 
   app.get('/searchdirector', (req, res) => {
     console.log('director', req.query.director);
@@ -317,6 +298,44 @@ module.exports = app => {
       res.send(getreview)
     });
   });
+
+  // get movies by year range
+  app.get('/moviebyyear', (req, res) => {
+    const {
+      start,
+      end
+    } = req.body;
+
+    Movie.findAll({
+      where: {
+        year: {[Op.between]: [start, end]}
+      }
+    }).then(d => res.send(d));
+  });
+
+  // get movies by rating range
+  app.get('/moviebyrating', (req, res) => {
+    const {
+      min,
+      max
+    } = req.body;
+
+    Movie.findAll({
+      where: {
+        rating: {[Op.between]: [min, max]}
+      }
+    }).then(d => res.send(d));
+  });
+
+  // // movie by gender rating (ie male ave rating > 7)
+  // app.get('/genderrating', (req, res) => {
+  //   const { gender } = req.body;
+  //
+  //   Review.findAll({
+  //
+  //   });
+  //
+  // });
 
 
 };
