@@ -327,15 +327,34 @@ module.exports = app => {
     }).then(d => res.send(d));
   });
 
-  // // movie by gender rating (ie male ave rating > 7)
-  // app.get('/genderrating', (req, res) => {
-  //   const { gender } = req.body;
-  //
-  //   Review.findAll({
-  //
-  //   });
-  //
-  // });
+  // movie by gender rating (ie male ave rating > 7)
+  app.get('/genderrating', (req, res) => {
 
+    const { gender } = req.body;
+    let genderlist = [];
+    let movielist = [];
+
+    User.findAll({
+      where: {gender: {[Op.iLike]: gender}}
+    }).each(d => genderlist.push(d.user_id))
+
+      .then(() =>
+        Review.findAll({
+          where: {user_id: genderlist},
+          group: ['movie_id'],
+          attributes: ['movie_id', [Sequelize.fn('AVG', Sequelize.col('rating')), 'ave_rating']]
+        }).each(d => {
+          //console.log(d.dataValues.ave_rating);
+          if (d.dataValues.ave_rating >= 8)
+          {movielist.push(d.movie_id)}
+          })
+
+          .then(() =>
+            Movie.findAll({
+              where: {movie_id: movielist}
+            }).then(d => res.send(d))
+          )
+      )
+  });
 
 };
