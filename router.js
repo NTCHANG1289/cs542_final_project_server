@@ -357,4 +357,32 @@ module.exports = app => {
       )
   });
 
+  //movie by genre, rating, year
+  app.get('/advancesearch', (req, res) => {
+      const {
+          min,
+          max,
+          start,
+          end
+      } = req.body;
+      let param = "%" + req.params.genre + "%";
+      let genreMovies = [];
+
+      Movie_genre.findAll({
+          where: {
+              genre: {[Op.iLike]: param}
+          }, raw: true
+      }).each(result => {
+          genreMovies.push(result.movie_id)
+      }).then(() => {
+          Movie.findAll({
+              where: {
+                  movie_id: genreMovies, //10
+                  rating: {[Op.between]: [min, max]},
+                  year: {[Op.between]: [start, end]}
+              }
+          }).then(d => res.send(d));
+      });
+  })
+
 };
