@@ -339,14 +339,10 @@ module.exports = app => {
     let movielist = [];
 
     User.findAll({
-<<<<<<< Updated upstream
       where: {
         gender: { [Op.iLike]: gender },
         dob: { [Op.lte]: moment().subtract(year_gap, 'years') }
       }
-=======
-      where: { gender: { [Op.iLike]: gender } }
->>>>>>> Stashed changes
     }).each(d => genderlist.push(d.user_id))
 
       .then(() =>
@@ -355,12 +351,7 @@ module.exports = app => {
           group: ['movie_id'],
           attributes: ['movie_id', [Sequelize.fn('AVG', Sequelize.col('rating')), 'ave_rating']]
         }).each(d => {
-          //console.log(d.dataValues.ave_rating);
-<<<<<<< Updated upstream
           if (d.dataValues.ave_rating >= set_rating) { movielist.push(d.movie_id) }
-=======
-          if (d.dataValues.ave_rating >= 8) { movielist.push(d.movie_id) }
->>>>>>> Stashed changes
         })
 
           .then(() =>
@@ -389,8 +380,8 @@ module.exports = app => {
       where: {
         rating: { [Op.between]: [ratingStart, ratingEnd] },
         year: { [Op.between]: [yearStart, yearEnd] },
-        director,
-        '$actor.actor_name$': actor,
+        director: { [Op.iLike]: `%${director}%` },
+        '$actor.actor_name$': { [Op.iLike]: `%${actor}%` },
         '$genre.genre$': genres,
       },
       include: [
