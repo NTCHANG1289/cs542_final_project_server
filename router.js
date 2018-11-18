@@ -339,10 +339,14 @@ module.exports = app => {
     let movielist = [];
 
     User.findAll({
+<<<<<<< Updated upstream
       where: {
         gender: { [Op.iLike]: gender },
         dob: { [Op.lte]: moment().subtract(year_gap, 'years') }
       }
+=======
+      where: { gender: { [Op.iLike]: gender } }
+>>>>>>> Stashed changes
     }).each(d => genderlist.push(d.user_id))
 
       .then(() =>
@@ -352,7 +356,11 @@ module.exports = app => {
           attributes: ['movie_id', [Sequelize.fn('AVG', Sequelize.col('rating')), 'ave_rating']]
         }).each(d => {
           //console.log(d.dataValues.ave_rating);
+<<<<<<< Updated upstream
           if (d.dataValues.ave_rating >= set_rating) { movielist.push(d.movie_id) }
+=======
+          if (d.dataValues.ave_rating >= 8) { movielist.push(d.movie_id) }
+>>>>>>> Stashed changes
         })
 
           .then(() =>
@@ -370,24 +378,27 @@ module.exports = app => {
       ratingEnd,
       yearStart,
       yearEnd,
-      genres
+      genres,
+      actor,
+      director
     } = req.query;
     let genreMovies = [];
+    console.log(req.query);
 
-    Movie_genre.findAll({
+    Movie.findAll({
       where: {
-        genre: genres
-      }, raw: true
-    }).each(result => {
-      genreMovies.push(result.movie_id)
-    }).then(() => {
-      Movie.findAll({
-        where: {
-          movie_id: genreMovies, //10
-          rating: { [Op.between]: [ratingStart, ratingEnd] },
-          year: { [Op.between]: [yearStart, yearEnd] }
-        }
-      }).then(d => res.send(d));
-    });
-  })
-};
+        rating: { [Op.between]: [ratingStart, ratingEnd] },
+        year: { [Op.between]: [yearStart, yearEnd] },
+        director,
+        '$actor.actor_name$': actor,
+        '$genre.genre$': genres,
+      },
+      include: [
+        { model: Movie_cast, as: 'actor', attributes: ['actor_name'] },
+        { model: Movie_genre, as: 'genre', attributes: ['genre'] },
+        { model: Recommend, as: 'recommend', attributes: ['movie_id2'] }
+      ]
+    }).then(d => res.send(d));
+
+  });
+}
