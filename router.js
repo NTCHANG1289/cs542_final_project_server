@@ -9,6 +9,8 @@ const requireSignin = passport.authenticate('local', { session: false });
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
+const moment = require('moment');
+
 const User = require('./models/user');
 const Movie = require('./models/movie');
 const Movie_cast = require('./models/movie_cast');
@@ -327,15 +329,23 @@ module.exports = app => {
     }).then(d => res.send(d));
   });
 
-  // movie by gender rating (ie male ave rating > 7)
-  app.get('/genderrating', (req, res) => {
+  // fav movies by gender, rating, age (ie female age > 10 ave rating >= 8)
+  app.get('/advancedfav', (req, res) => {
 
-    const { gender } = req.body;
+    const {
+      gender = 'f' || 'm',
+      year_gap = 0,
+      set_rating = 8
+    } = req.body;
+
     let genderlist = [];
     let movielist = [];
 
     User.findAll({
-      where: {gender: {[Op.iLike]: gender}}
+      where: {
+        gender: {[Op.iLike]: gender},
+        dob: {[Op.lte]: moment().subtract(year_gap, 'years')}
+      }
     }).each(d => genderlist.push(d.user_id))
 
       .then(() =>
@@ -345,7 +355,7 @@ module.exports = app => {
           attributes: ['movie_id', [Sequelize.fn('AVG', Sequelize.col('rating')), 'ave_rating']]
         }).each(d => {
           //console.log(d.dataValues.ave_rating);
-          if (d.dataValues.ave_rating >= 8)
+          if (d.dataValues.ave_rating >= set_rating)
           {movielist.push(d.movie_id)}
           })
 
