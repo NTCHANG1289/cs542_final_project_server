@@ -33,10 +33,8 @@ module.exports = app => {
     const {
       movie_id
     } = req.query;
-    //console.log(movie_id);
     let recommendMovies = [];
     Recommend.findAll({ where: { movie_id1: movie_id }, raw: true }).each(result => {
-      // console.log(movie_id);
       recommendMovies.push(result.movie_id2);
     }).then(() => {
       Movie.findAll({ where: { movie_id: recommendMovies } }).then((d) => res.send(d));
@@ -45,7 +43,6 @@ module.exports = app => {
 
   // recommend by fav_genre
   app.get('/user/recommend', (req, res) => {
-    console.log(req.query.user_id);
     let all_genre = [];
     let all_movie = [];
 
@@ -310,7 +307,7 @@ module.exports = app => {
 
     Movie.findAll({
       where: {
-        year: {[Op.between]: [start, end]}
+        year: { [Op.between]: [start, end] }
       }
     }).then(d => res.send(d));
   });
@@ -318,13 +315,13 @@ module.exports = app => {
   // get movies by rating range
   app.get('/moviebyrating', (req, res) => {
     const {
-      min,
-      max
-    } = req.body;
+      ratingStart,
+      ratingEnd
+    } = req.query;
 
     Movie.findAll({
       where: {
-        rating: {[Op.between]: [min, max]}
+        rating: { [Op.between]: [ratingStart, ratingEnd] }
       }
     }).then(d => res.send(d));
   });
@@ -343,56 +340,54 @@ module.exports = app => {
 
     User.findAll({
       where: {
-        gender: {[Op.iLike]: gender},
-        dob: {[Op.lte]: moment().subtract(year_gap, 'years')}
+        gender: { [Op.iLike]: gender },
+        dob: { [Op.lte]: moment().subtract(year_gap, 'years') }
       }
     }).each(d => genderlist.push(d.user_id))
 
       .then(() =>
         Review.findAll({
-          where: {user_id: genderlist},
+          where: { user_id: genderlist },
           group: ['movie_id'],
           attributes: ['movie_id', [Sequelize.fn('AVG', Sequelize.col('rating')), 'ave_rating']]
         }).each(d => {
           //console.log(d.dataValues.ave_rating);
-          if (d.dataValues.ave_rating >= set_rating)
-          {movielist.push(d.movie_id)}
-          })
+          if (d.dataValues.ave_rating >= set_rating) { movielist.push(d.movie_id) }
+        })
 
           .then(() =>
             Movie.findAll({
-              where: {movie_id: movielist}
+              where: { movie_id: movielist }
             }).then(d => res.send(d))
           )
       )
   });
 
   //movie by genre, rating, year
-  app.get('/advancesearch', (req, res) => {
-      const {
-          min,
-          max,
-          start,
-          end
-      } = req.body;
-      let param = "%" + req.params.genre + "%";
-      let genreMovies = [];
+  app.get('/advanceSearchForMovies', (req, res) => {
+    const {
+      ratingStart,
+      ratingEnd,
+      yearStart,
+      yearEnd,
+      genres
+    } = req.query;
+    let genreMovies = [];
 
-      Movie_genre.findAll({
-          where: {
-              genre: {[Op.iLike]: param}
-          }, raw: true
-      }).each(result => {
-          genreMovies.push(result.movie_id)
-      }).then(() => {
-          Movie.findAll({
-              where: {
-                  movie_id: genreMovies, //10
-                  rating: {[Op.between]: [min, max]},
-                  year: {[Op.between]: [start, end]}
-              }
-          }).then(d => res.send(d));
-      });
+    Movie_genre.findAll({
+      where: {
+        genre: genres
+      }, raw: true
+    }).each(result => {
+      genreMovies.push(result.movie_id)
+    }).then(() => {
+      Movie.findAll({
+        where: {
+          movie_id: genreMovies, //10
+          rating: { [Op.between]: [ratingStart, ratingEnd] },
+          year: { [Op.between]: [yearStart, yearEnd] }
+        }
+      }).then(d => res.send(d));
+    });
   })
-
 };
