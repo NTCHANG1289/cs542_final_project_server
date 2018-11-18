@@ -376,14 +376,47 @@ module.exports = app => {
     let genreMovies = [];
     console.log(req.query);
 
-    Movie.findAll({
-      where: {
-        rating: { [Op.between]: [ratingStart, ratingEnd] },
-        year: { [Op.between]: [yearStart, yearEnd] },
+    let whereStatement = {
+      rating: { [Op.between]: [ratingStart, ratingEnd] },
+      year: { [Op.between]: [yearStart, yearEnd] },
+    };
+
+    if (genres && director && actor) {
+      whereStatement = Object.assign({}, whereStatement, {
         director: { [Op.iLike]: `%${director}%` },
         '$actor.actor_name$': { [Op.iLike]: `%${actor}%` },
         '$genre.genre$': genres,
-      },
+      })
+    } else if (!genres && director && actor) {
+      whereStatement = Object.assign({}, whereStatement, {
+        director: { [Op.iLike]: `%${director}%` },
+        '$actor.actor_name$': { [Op.iLike]: `%${actor}%` }
+      })
+    } else if (genres && !director && actor) {
+      whereStatement = Object.assign({}, whereStatement, {
+        '$actor.actor_name$': { [Op.iLike]: `%${actor}%` },
+        '$genre.genre$': genres,
+      })
+    } else if (genres && director && !actor) {
+      whereStatement = Object.assign({}, whereStatement, {
+        director: { [Op.iLike]: `%${director}%` },
+        '$genre.genre$': genres
+      })
+    } else if (!genres && !director && actor) {
+      whereStatement = Object.assign({}, whereStatement, {
+        '$actor.actor_name$': { [Op.iLike]: `%${actor}%` }
+      })
+    } else if (genres && !director && !actor) {
+      whereStatement = Object.assign({}, whereStatement, {
+        '$genre.genre$': genres
+      })
+    } else if (!genres && director && !actor) {
+      whereStatement = Object.assign({}, whereStatement, {
+        director: { [Op.iLike]: `%${director}%` }
+      })
+    }
+    Movie.findAll({
+      where: whereStatement,
       include: [
         { model: Movie_cast, as: 'actor', attributes: ['actor_name'] },
         { model: Movie_genre, as: 'genre', attributes: ['genre'] },
