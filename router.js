@@ -50,11 +50,20 @@ module.exports = app => {
       where: { user_id: req.query.user_id }, raw: true
     })
       .each(d => all_genre.push(d.fav_genre))
+
       .then(() => Movie_genre.findAll({
+        //group: ['genre', 'movie_id'],
         where: { genre: all_genre }
       })
         .each(d => all_movie.push(d.movie_id))
-        .then(() => Movie.findAll({ where: { movie_id: all_movie } }).then(d => res.send(d))));
+        .then(() =>
+          Movie.findAll({
+
+            where: { movie_id: all_movie },
+            order: [['rating', 'DESC']],
+            limit: 10
+
+          }).then(d => res.send(d))));
 
   });
 
