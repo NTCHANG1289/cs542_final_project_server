@@ -229,7 +229,8 @@ module.exports = app => {
       if (existReview) {
         Review.update({
           review,
-          rating
+          rating,
+          date
         },
           {
             where: {
@@ -415,6 +416,7 @@ module.exports = app => {
         director: { [Op.iLike]: `%${director}%` }
       })
     }
+    
     Movie.findAll({
       where: whereStatement,
       include: [
