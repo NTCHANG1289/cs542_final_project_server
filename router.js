@@ -276,7 +276,8 @@ module.exports = app => {
       }).then(user => {
         getreview.push(
           Object.assign({}, review, {
-            username: user.dataValues.username
+            username: user.dataValues.username,
+            date: moment(review.date).format("YYYY-MM-DD HH:mm")
           })
         )
       })

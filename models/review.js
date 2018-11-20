@@ -1,6 +1,5 @@
 const Sequelize = require('sequelize');
 const sequelize = require('../db/getSequelize');
-
 const User = require('./user');
 const Movie = require('./movie');
 
@@ -39,9 +38,9 @@ const Review = sequelize().define('review', {
         defaultValue: Sequelize.NOW
     }
 }, {
-  timestamps: false,
-  freezeTableName: true
-});
+        timestamps: false,
+        freezeTableName: true
+    });
 
 //Review.belongsTo(Movie, { foreignKey: 'movie_id'});
 //Review.belongsTo(User, { foreignKey: 'user_id'});
