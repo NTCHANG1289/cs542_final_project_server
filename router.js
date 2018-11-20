@@ -260,7 +260,9 @@ module.exports = app => {
       }
     }).each(async result => {
       const review = result.dataValues;
-      // console.log(moment(review.date).format("YYYY-MM-DD HH:mm"));
+      console.log(moment.tz.guess())
+      console.log(review.date);
+      console.log(moment(review.date).format("YYYY-MM-DD HH:mm"));
       await User.find({
         where: {
           user_id: review.user_id
